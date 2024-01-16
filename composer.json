@@ -1,0 +1,17 @@
+{
+    "name": "animaux/devkit",
+    "description": "Get easily accessible info on variables and data in frontend for template development.",
+    "type": "kirby-plugin",
+    "version": "0.1.0",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Alexander Rutz",
+            "email": "ar@animaux.de"
+        }
+    ],
+    "homepage": "https://github.com/animaux/kirby-devkit",
+    "support": {
+        "issues": "https://github.com/hananils/kirby-devkit/issues/"
+    },
+}
