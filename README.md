@@ -4,7 +4,7 @@ Get easily accessible info on variables and data in frontend for template develo
 
 ## General
 
-Coming from Symphony CMS I found myself a bit lost now and then when looking for available data while building page templates. Using the `debug devkit`-extension there was a way to show all available parameters and data for a current page. This plugin aims to bring a bit of this back without having to resort to `var_dump()`s and echoing variables too much.
+Coming from Symphony CMS I found myself a bit lost now and then when looking for available data while building page templates. Using the `debug devkit`-extension in Symphony there was a way to show all available parameters and data for a current page. This plugin aims to bring a bit of this back without having to resort to `var_dump()`s and echoing variables all too much.
 
 ## Installation
 
