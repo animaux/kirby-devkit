@@ -1,18 +1,17 @@
 <?php
 
-
-
 Kirby::plugin('animaux/devkit', [
 
 	'hooks' => [
 			'page.render:before' => function (string $contentType, array $data, Kirby\Cms\Page $page) {
 			
+				$kirby = $this;
 				$user = $this->user();
 				$site = $this->site();
 				$content = $page->content();
-					
+				
 				/* Check for ?devkit and logged in user */
-				if ($user && $user->isLoggedIn() && isset($_GET['dev'])) {
+				if ($kirby->option('debug') === true && $user && $user->isLoggedIn() && isset($_GET['dev'])) {
 
 					function echoVar($key, $val) {
 						echo '<li><b>' . $key . '</b><span>' . $val . '</span></li>';
@@ -39,7 +38,7 @@ Kirby::plugin('animaux/devkit', [
 						line-height: 1.4em;
 						padding: .25em;
 						}
-						
+					
 						ul.debug li:hover {
 						background: rgba(255,255,255,.2);
 						}
@@ -47,34 +46,39 @@ Kirby::plugin('animaux/devkit', [
 						ul.debug li > b {
 						flex: 0 0 16em;
 						}
-						
+					
 						ul.debug li > span {
 						flex: 1 0 0;
 						}
 					</style>';
 					echo '<ul class="debug">';
-
+					
 						/* System */
 						echoVar('kirby', Kirby::version());
 						echoVar('php', phpversion());
-	
+
 						echo '<br/>';
-	
+
 						/* Basics */
 						echoVar('$site->title()', $site->title());
 						echoVar('$site->root()', $site->root());
 						echoVar('$site->url()', $site->url());
-	
+
 						echo '<br/>';
-	
+
 						/* User */
 						echoVar('$user', $user);
-						echoVar('$user->name()', $user->name());
-						
+						echoVar('$user->name()', $user->name());						
 						echo '<br/>';
-	
-						/* Page */
+					
+
+						/* PageTemplates */
 						echoVar('$page->slug()', $page->slug());
+						echoVar('$page->intendedTemplate()', $page->intendedTemplate());
+						echoVar('$page->template()', $page->template());
+						echo '<br/>';
+
+						/* Fields/Data */
 						foreach($content->data() as $key => $val) {
 							echo '<li><b>$page->' . $key . '()</b><span>';
 							if (is_array($val)) {
@@ -102,7 +106,6 @@ Kirby::plugin('animaux/devkit', [
 							}
 							echo '</ul>';
 						}
-					
 			}
 	]
 
