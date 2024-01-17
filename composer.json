@@ -2,7 +2,7 @@
     "name": "animaux/devkit",
     "description": "Get easily accessible info on variables and data in frontend for template development.",
     "type": "kirby-plugin",
-    "version": "0.2.0",
+    "version": "0.3.0",
     "license": "MIT",
     "authors": [
         {
