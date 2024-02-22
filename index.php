@@ -1,24 +1,28 @@
 <?php
 
-Kirby::plugin('animaux/devkit', [
+$debug = '';
 
+Kirby::plugin('animaux/devkit', [
+  
 	'hooks' => [
-		'page.render:before' => function (string $contentType, array $data, Kirby\Cms\Page $page) {
+		'page.render:after' => function (string $contentType, array $data, $html, Kirby\Cms\Page $page) {
 		
 			$kirby = $this;
 			$user = $this->user();
 			$site = $this->site();
 			$files = $page->files();
 			$content = $page->content();
+			global $debug;
+
+			function addVar($name, $value) {
+				global $debug;
+				$debug .= '<li><b>' . $name . '</b><span>' . $value . '</span></li>';
+			}
 			
 			/* Check for ?devkit and logged in user */
-			if ($kirby->option('debug') === true && $user && $user->isLoggedIn() && isset($_GET['dev'])) {
+			if ($kirby->option('debug') === true && $user && $user->isLoggedIn() && (isset($_GET['dev']) or isset($_GET['devkit']))) {
 
-				function echoVar($key, $val) {
-					echo '<li><b>' . $key . '</b><span>' . $val . '</span></li>';
-				}
-
-				echo '<style>
+				$debug .= '<style>
 					ul.debug {
 					display: block;
 					color: white;
@@ -62,6 +66,15 @@ Kirby::plugin('animaux/devkit', [
 					margin: .5em 0 0 0;
 					}
 					
+					ul.files li * {
+					flex: 1;
+					}
+					
+					ul.files li img {
+					max-width: 46px;
+					height: 46px;
+					}
+					
 					ul.files div.file {
 					display: flex;
 					align-items: center;
@@ -69,102 +82,102 @@ Kirby::plugin('animaux/devkit', [
 					font-weight: bold;
 					text-transform: uppercase;
 					letter-spacing: .05em;
-					width: 46px;
+					max-width: 46px;
 					height: 46px;
 					color: black;
 					background: rgba(255,255,255,.5);
 					}
 				</style>';
-				echo '<ul class="debug">';
+				$debug .= '<ul class="debug">';
 				
-					/* System */
-					echoVar('kirby', Kirby::version());
-					echoVar('php', phpversion());
+					/* System */					
+					addVar('kirby', Kirby::version());
+					addVar('php', phpversion());
 
-					echo '<br/>';
-
+					$debug .= '<br/>';
+					
 					/* Basics */
-					echoVar('$site->title()', $site->title());
-					echoVar('$site->root()', $site->root());
-					echoVar('$site->url()', $site->url());
+					addVar('$site->title()', $site->title());
+					addVar('$site->root()', $site->root());
+					addVar('$site->url()', $site->url());
 
-					echo '<br/>';
+					$debug .= '<br/>';
 
 					/* User */
-					echoVar('$user', $user);
-					echoVar('$user->name()', $user->name());						
-					echo '<br/>';
+					addVar('$user', $user);
+					addVar('$user->name()', $user->name());						
+					$debug .= '<br/>';
 				
 
 					/* PageTemplates */
-					echoVar('$page->slug()', $page->slug());
-					echoVar('$page->intendedTemplate()', $page->intendedTemplate());
-					echoVar('$page->template()', $page->template());
-					echo '<br/>';
-
+					addVar('$page->slug()', $page->slug());
+					addVar('$page->intendedTemplate()', $page->intendedTemplate());
+					addVar('$page->template()', $page->template());
+					$debug .= '<br/>';
+					
 					/* Fields/Data */
 					foreach($content->data() as $key => $val) {
-						echo '<li><b>$page->' . $key . '()</b><span>';
+						$debug .= '<li><b>$page->' . $key . '()</b><span>';
 						if (is_array($val)) {
 							foreach ($val as $subKey => $subVal) {
-								echo '<b>' . $subKey . '</b>: ';
+								$debug .= '<b>' . $subKey . '</b>: ';
 									/* Subarrays */
 									if (is_array($subVal)) {
 										foreach ($subVal as $subSubKey => $subSubVal) {
-											echo '[' . array_search($subSubKey,array_keys($subVal)) . '] ';
+											$debug .= '[' . array_search($subSubKey,array_keys($subVal)) . '] ';
 											if (is_string($subSubVal[0])) {
-												echo $subSubVal[0] . ' —> ' . $subSubVal[1];
+												$debug .= $subSubVal[0] . ' —> ' . $subSubVal[1];
 											}
-											if ($subSubKey != array_key_last($subVal)) {echo '<br/>';}
+											if ($subSubKey != array_key_last($subVal)) {$debug .= '<br/>';}
 										}
 									} else {
-										echo $subVal;
+										$debug .= $subVal;
 									}
 								}
-								echo '<br/>';
+								$debug .= '<br/>';
 							} else {
 								/* Files */
 								if (is_string($val) && str_starts_with($val, '- file://')) {
 									$files = $page->$key()->sortBy('sort','desc')->toFiles();
-									echo '<ul class="files">';
+									$debug .= '<ul class="files">';
 										foreach ($files as $file) {
-											echo '<li>';
+											$debug .= '<li>';
 												if ($file->type() == 'image') {
-													echo $file->thumb([
+													$debug .= $file->thumb([
 														'crop' => true,
 														'width'   => 46,
 														'height'  => 46,
 														'quality' => 80,
 													])->html();
 												} else {
-												  echo '<div class="file">' . $file->extension() . '</div>';
+												  $debug .= '<div class="file">' . $file->extension() . '</div>';
 												}
-												echo '<p>';	    
-													echo '<b>' . $file->uuid() . '</b><br/>';
-													echo '»' . $file->title() . '«';
-													echo '<br/>';
-													echo $file->root();
-												echo '</p>';
-											echo '</li>';
+												$debug .= '<p>';	    
+													$debug .= '<b>' . $file->uuid() . '</b><br/>';
+													$debug .= '»' . $file->title() . '«';
+													$debug .= '<br/>';
+													$debug .= $file->root();
+												$debug .= '</p>';
+											$debug .= '</li>';
 										}
-									echo '</ul>';
+									$debug .= '</ul>';
 								} else if (is_string($val)) {
-									echo $val;
+									$debug .= $val;
 								}
 							}
-							echo '</span></li>';
+							$debug .= '</span></li>';
 						}
-						echo '</ul>';
+						$debug .= '</ul>';
 					}
+					
+					/* Page Controllers abgrasen? */
+					//$debug .= $kirby->controller($page->intendedTemplate()->name());
+					
+					
+					/* Output */
+					return $debug . $html;
+					
 			}
 	]
 
 ]);
-
-
-
-
-
-
-
-
