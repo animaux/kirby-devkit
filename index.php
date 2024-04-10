@@ -19,7 +19,7 @@ Kirby::plugin('animaux/devkit', [
 				$debug .= '<li><b>' . $name . '</b><span>' . $value . '</span></li>';
 			}
 			
-			/* Check for ?devkit and logged in user */
+			/* Check for ?devkit or ?dev, debug mode and logged in user */
 			if ($kirby->option('debug') === true && $user && $user->isLoggedIn() && (isset($_GET['dev']) or isset($_GET['devkit']))) {
 
 				$debug .= '<style>

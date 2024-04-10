@@ -14,7 +14,7 @@ No composer registration yet. Simply copy the folder into you `site/plugins` fol
 
 ## Usage
 
-Simply add the query string `?dev` to your frontend page. If you already have a query string on your current site just add `&dev` instead.
+Simply add the query string `?dev` to your frontend page. If you already have a query string on your current site just add `&dev` instead. Also kirby’s debug mode needs to active.
 
 ### Configuration
 
