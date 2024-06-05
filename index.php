@@ -3,6 +3,13 @@
 $debug = '';
 
 Kirby::plugin('animaux/devkit', [
+  name: 'animaux/devkit',
+  version: '0.4.1',
+  info: [
+			'description' => 'Get easily accessible info on variables and data in frontend for template development.',
+			'homepage' => 'https://github.com/animaux/kirby-devkit',
+			'license' => 'MIT',
+	],
   
 	'hooks' => [
 		'page.render:after' => function (string $contentType, array $data, $html, Kirby\Cms\Page $page) {
